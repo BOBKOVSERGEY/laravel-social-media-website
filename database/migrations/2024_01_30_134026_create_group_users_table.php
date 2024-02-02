@@ -17,9 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('status', 25); // approved, pending
             $table->string('role', 25); // admin, user
-            $table->string('token', 1024)->nullable();
-            $table->timestamp('token_expire_date')->nullable();
-            $table->timestamp('token_used')->nullable();
+            $table->string('token', 1024)
+                ->nullable();
+            $table->timestamp('token_expire_date')
+                ->nullable();
+            $table->timestamp('token_used')
+                ->nullable();
             $table->foreignIdFor(model: User::class)
                 ->constrained()
                 ->cascadeOnDelete()
@@ -28,7 +31,11 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('created_by')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();;
             $table->timestamp('created_at')->nullable();
         });
     }

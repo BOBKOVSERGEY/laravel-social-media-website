@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Group;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,25 +13,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(model: User::class)
-                ->constrained('users')
+            $table->foreignIdFor(User::class)
+                ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->foreignIdFor(model: Group::class)
-                ->nullable()
+            $table->foreignIdFor(Post::class)
                 ->constrained()
-                ->nullOnDelete();
-            $table->longText('body')
-                ->nullable();
-            $table->foreignId('deleted_by')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->text('comment');
+            $table->foreignId('parent_id')
                 ->nullable()
                 ->references('id')
-                ->on('users')
-                ->nullOnDelete();
-            $table->timestamp('deleted_at')
-                ->nullable();
+                ->on('comments')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -41,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('comments');
     }
 };
